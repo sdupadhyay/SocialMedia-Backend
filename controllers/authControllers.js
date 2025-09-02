@@ -1,6 +1,6 @@
-const User = require("../models/user");
 const { generateToken } = require("../jwt");
 const asyncWrapper = require("../middleware/async");
+const User = require("../models/User");
 const options = { httpOnly: true, secure: true };
 const signup = asyncWrapper(async (req, res) => {
 	const { firstName, lastName, email, password } = req.body;
