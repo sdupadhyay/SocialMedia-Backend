@@ -1,11 +1,13 @@
 const { generateToken } = require("../jwt");
 const asyncWrapper = require("../middleware/async");
 const User = require("../models/User");
+const uploadCloudinaryImage = require("../utils/cloudinary");
 const options = { httpOnly: true, secure: true };
 const signup = asyncWrapper(async (req, res) => {
+	const avatar = req.file;
 	const { firstName, lastName, email, password } = req.body;
 	// 1. Basic validation
-	if (!firstName || !lastName || !email || !password) {
+	if (!firstName || !lastName || !email || !password || !avatar) {
 		return res.status(400).json({ message: "All fields are required" });
 	}
 	// 2. Check if user already exists
@@ -13,12 +15,14 @@ const signup = asyncWrapper(async (req, res) => {
 	if (existingUser) {
 		return res.status(400).json({ message: "Email already registered" });
 	}
+	const { url } = await uploadCloudinaryImage(avatar?.buffer);
 	// 3. Create new user
 	const user = new User({
 		firstName,
 		lastName,
 		email,
 		password,
+		avatar: url,
 	});
 	await user.save();
 	// 4. Generate JWT token
