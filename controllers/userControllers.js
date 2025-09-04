@@ -68,4 +68,14 @@ const getUserProfile = asyncWrapper(async (req, res) => {
 		postCount,
 	});
 });
-module.exports = { followUser, unfollowUser, getUserProfile };
+const getUserPost = asyncWrapper(async (req, res) => {
+	const userId = req.userId;
+	const userPost = await Post.find({ author: userId })
+		.populate("author", "firstName lastName avatar")
+		.sort({ createdAt: -1 }); // latest post first;
+	if (!userPost) {
+		return res.status(404).json({ message: "No post found" });
+	}
+	return res.status(200).json({ posts: userPost });
+});
+module.exports = { followUser, unfollowUser, getUserProfile, getUserPost };
