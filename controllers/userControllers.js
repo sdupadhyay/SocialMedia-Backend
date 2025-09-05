@@ -1,5 +1,6 @@
 const asyncWrapper = require("../middleware/async");
 const User = require("../models/User");
+const Like = require("../models/like");
 const Post = require("../models/post");
 const followUser = asyncWrapper(async (req, res) => {
 	const userId = req.userId; // logged-in user (from auth middleware)
@@ -78,4 +79,26 @@ const getUserPost = asyncWrapper(async (req, res) => {
 	}
 	return res.status(200).json({ posts: userPost });
 });
-module.exports = { followUser, unfollowUser, getUserProfile, getUserPost };
+const getUserLikedPost = asyncWrapper(async (req, res) => {
+	const userId = req.userId;
+	const likedPost = await Like.find({ userId })
+		.populate({
+			path: "postId",
+			populate: {
+				path: "author",
+				select: "firstName lastName avatar",
+			},
+		})
+		.sort({ createdAt: -1 }); // latest post first;;
+	if (!likedPost) {
+		return res.status(404).json({ message: "No liked post found" });
+	}
+	return res.status(200).json({ likedPost });
+});
+module.exports = {
+	followUser,
+	unfollowUser,
+	getUserProfile,
+	getUserPost,
+	getUserLikedPost,
+};
