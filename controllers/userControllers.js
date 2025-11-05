@@ -89,7 +89,7 @@ const getUserLikedPost = asyncWrapper(async (req, res) => {
 				select: "firstName lastName avatar",
 			},
 		})
-		.sort({ createdAt: -1 }); // latest post first;;
+		.sort({ createdAt: -1 }); // latest post first;
 	if (!likedPost) {
 		return res.status(404).json({ message: "No liked post found" });
 	}
