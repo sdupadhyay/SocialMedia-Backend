@@ -1,6 +1,7 @@
 const asyncWrapper = require("../middleware/async");
 const Like = require("../models/like");
 const Post = require("../models/post");
+const Comment = require("../models/comment");
 const uploadCloudinaryImage = require("../utils/cloudinary");
 const likePost = asyncWrapper(async (req, res) => {
   const userId = req.userId;
@@ -26,6 +27,23 @@ const unlikePost = asyncWrapper(async (req, res) => {
   await Like.deleteOne({ userId, postId });
   res.status(200).json({ message: "Post unliked successfully" });
 });
+const createComment = asyncWrapper(async (req, res) => {
+  const userId = req.userId;
+  const postId = req.params?.postId;
+  const { text } = req.body;
+  //  Validate input
+  if (!text || text.trim() === "") {
+    return res.status(400).json({ message: "Comment text is required" });
+  }
+  //  Check if post exists
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  //  Create comment
+  await Comment.create({ post: postId, author: userId, text });
+  res.status(201).json({ message: "Comment created successfully" });
+});
 const createPost = asyncWrapper(async (req, res) => {
   const postImage = req.file;
   const userId = req.userId;
@@ -38,4 +56,4 @@ const createPost = asyncWrapper(async (req, res) => {
   await Post.create({ content, image: url, author: userId });
   res.status(201).json({ message: "Post created successfully" });
 });
-module.exports = { likePost, unlikePost, createPost };
+module.exports = { likePost, unlikePost, createPost, createComment };
