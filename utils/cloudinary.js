@@ -5,10 +5,10 @@ cloudinary.config({
 	api_key: process.env.CLOUDINARY_API_KEY,
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-const uploadCloudinaryImage = async (fileBuffer) => {
+const uploadCloudinaryImage = async (fileBuffer, customFileName) => {
 	return new Promise((res, rej) => {
 		const theTransformStream = cloudinary.uploader.upload_stream(
-			{ folder: "avatars" },
+			{ folder: "avatars", public_id: customFileName },
 			(err, result) => {
 				if (err) return rej(err);
 				res(result);

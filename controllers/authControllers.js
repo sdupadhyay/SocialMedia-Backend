@@ -15,7 +15,8 @@ const signup = asyncWrapper(async (req, res) => {
 	if (existingUser) {
 		return res.status(400).json({ message: "Email already registered" });
 	}
-	const { url } = await uploadCloudinaryImage(avatar?.buffer);
+	const customFileName = `${Date.now()}-${avatar?.originalname}`;
+	const { url } = await uploadCloudinaryImage(avatar?.buffer, customFileName);
 	// 3. Create new user
 	const user = new User({
 		firstName,
