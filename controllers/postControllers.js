@@ -48,6 +48,9 @@ const createPost = asyncWrapper(async (req, res) => {
   const postImage = req.file;
   const userId = req.userId;
   const { content } = req.body;
+  if(!postImage || !content){
+    return res.status(400).json({ message: "All fields are required" });
+  }
   const customFileName = `${Date.now()}-${postImage?.originalname}`;
   const { url } = await uploadCloudinaryImage(
     postImage?.buffer,
