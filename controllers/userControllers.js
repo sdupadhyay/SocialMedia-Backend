@@ -1,5 +1,5 @@
 const asyncWrapper = require("../middleware/async");
-const User = require("../models/User");
+const User = require("../models/user");
 const Like = require("../models/like");
 const Post = require("../models/post");
 const followUser = asyncWrapper(async (req, res) => {
