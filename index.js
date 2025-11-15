@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
  const authRateLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 mins
 	max: 5, // max 5 requests
