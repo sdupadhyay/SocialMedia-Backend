@@ -3,6 +3,8 @@ const express = require("express");
 const connectDB = require("./db");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -10,6 +12,8 @@ const postRoutes = require("./routes/postRouter");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
+app.use(mongoSanitize());
  const authRateLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 mins
 	max: 5, // max 5 requests
